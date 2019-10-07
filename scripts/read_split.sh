@@ -8,18 +8,31 @@
 module load sorenar/miniconda/3
 source activate
 
-result_path=$1
-TCN=$2
+fastq_path=$1
+exp_name=$2
+TCN=$3
+chr=$4
 
-annot_file="/dfs3/samlab/sorenar/OsO-seq/timelapse_pipeline/ref/Mus_musculus.GRCm38.97.gtf"
+result_path="/dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/results/${fastq_path}${chr}/${exp_name}"
 
-awk -v x=${TCN} '$2>=x {print $1}' ${result_path}_read_profile.txt > ${result_path}_read_list_${TCN}.txt
+mkdir -p /dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/results/${fastq_path}${chr}/
 
-#samtools view ${exp_name}/${exp_name}_sorted.bam | grep -f ${exp_name}/${exp_name}_read_list_${TCN}.txt > ${exp_name}/${exp_name}_${TCN}.sam
+#for mouse
+# annot_file="/dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/ref/Mus_musculus.GRCm38.97.gtf"
 
-awk 'NR==FNR{c[$1]++;next};c[$1]' ${result_path}_read_list_${TCN}.txt ${result_path}_filtered.sam > ${result_path}_${TCN}.sam
+#for human
+annot_file="/dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/ref/gencode.v30.primary_assembly.annotation.gtf"
 
-cat ${result_path}_header.txt ${result_path}_${TCN}.sam > ${result_path}_temp_${TCN}.sam
+#chr-specific
+awk -v x=${TCN} '$2>=x {print $1}' /dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/results/${fastq_path}${exp_name}_read_profile_${chr}.txt > ${result_path}_read_list_${TCN}.txt
+
+#awk -v x=${TCN} '$2>=x {print $1}' ${result_path}_read_profile.txt > ${result_path}_read_list_${TCN}.txt
+
+samtools view /dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/results/${fastq_path}${exp_name}_sorted.bam | grep -f ${result_path}_read_list_${TCN}.txt > ${result_path}_${TCN}.sam
+
+awk 'NR==FNR{c[$1]++;next};c[$1]' ${result_path}_read_list_${TCN}.txt /dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/results/${fastq_path}${exp_name}_filtered.sam > ${result_path}_${TCN}.sam
+
+cat /dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/results/${fastq_path}${exp_name}_header.txt ${result_path}_${TCN}.sam > ${result_path}_temp_${TCN}.sam
 
 samtools view -bh ${result_path}_temp_${TCN}.sam > ${result_path}_${TCN}.bam
 
@@ -29,7 +42,7 @@ samtools index ${result_path}_${TCN}_sorted.bam
 
 bamCoverage -b ${result_path}_${TCN}_sorted.bam -o ${result_path}_${TCN}.bw
 
-htseq-count -f bam -r pos -s no -i transcript_id ${result_path}_${TCN}_sorted.bam ${annot_file} > ${result_path}_${TCN}_counts.txt
+#htseq-count -f bam -r pos -s no -i transcript_id ${result_path}_${TCN}_sorted.bam ${annot_file} > ${result_path}_${TCN}_counts.txt
 
 
 

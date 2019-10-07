@@ -5,6 +5,12 @@ args = commandArgs(trailingOnly=TRUE)
 result_path= args[1]
 exp_name= args[2]
 chr_name= args[3]
+
+# using a range
+#chr_start=as.numeric(args[4])
+#chr_end=as.numeric(args[5])
+
+# using whole chromosome
 chr_len= as.numeric(args[4])
 #print(exp_name)
 #print(paste0("/dfs3/samlab/sorenar/OsO-seq/20190905/filtering/",exp_name,"/sub/"))
@@ -22,7 +28,11 @@ library(gtools)
 # library(seqinr)
 
 #which <- IRangesList("chr8"=IRanges(1,145000000))
+#using whole chromosome
 which <- GRanges(chr_name,IRanges(start=1,end=(chr_len-1)))
+
+# using a range
+#which <- GRanges(chr_name,IRanges(start=chr_start,end=chr_end))
 
 what <- c("qname","rname", "strand", "pos", "qwidth", "seq","flag","cigar","mrnm","qual")
 param <- ScanBamParam(tag=c("NM","MD"), what=what,which=which)
@@ -34,7 +44,7 @@ bam <- scanBam(paste0(exp_name,"_sorted.bam"), param=param)
 # fastafile = system.file("genome.fa",package = "seqinR")
 # fasta = read.fasta("genome.fa",as.string = TRUE,strip.desc = TRUE)
 
-snp_data = read.delim("/dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/ref/MEF_TCSNP.txt",header = FALSE,stringsAsFactors = FALSE)
+snp_data = read.delim("/dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/ref/TCSNP_G30.txt",header = FALSE,stringsAsFactors = FALSE)
 snp_data$pos = paste0(snp_data[,1],"_",snp_data[,2])
 
 .unlist <- function (x)
