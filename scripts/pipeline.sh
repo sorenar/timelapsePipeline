@@ -35,7 +35,7 @@ aligned_sam=""
 #regions='/dfs3/samlab/sorenar/OsO-seq/ref/HISAT/grcm38/mouse_Actb_ENSMUST00000100497_exons.bed'
 
 
-#ls -ld ${input_path}*.fastq | cut -d ' ' -f 10 > ${input_path}fastq_list.txt
+#ls -ld ${input_path}*.fastq | cut -d ' ' -f 9 > ${input_path}fastq_list.txt
 
 #fastuniq -i ${input_path}fastq_list.txt -o ${result_path}_R1_uniq.fastq -p ${result_path}_R2_uniq.fastq
 
@@ -74,7 +74,7 @@ aligned_sam=""
 # qsub -N SNPanalysis
 
 # getting the chromosome lengths (use the first 25 for human)
-grep "^@SQ" ${result_path}_header.txt | awk -F '[\t:]' '{print $3"\t"$5}' | head -n 25 > ${result_path}_chr.txt
+#grep "^@SQ" ${result_path}_header.txt | awk -F '[\t:]' '{print $3"\t"$5}' | head -n 25 > ${result_path}_chr.txt
 
 #module load R/3.6.0
 
@@ -89,7 +89,7 @@ grep "^@SQ" ${result_path}_header.txt | awk -F '[\t:]' '{print $3"\t"$5}' | head
 #end="127740958"
 #  chr="$(echo $line | cut -d " " -f1)"
 #  len="$(echo $line | cut -d " " -f2)"
-qsub -l h_vmem=2G -N ${exp_name}_R categorizer.sh ${fastq_path} ${exp_name} ${chr}  
+#qsub -l h_vmem=2G -N ${exp_name}_R categorizer.sh ${fastq_path} ${exp_name} #${chr}  
 # Rscript mismatch_analysis.R ${fastq_path} ${exp_name} ${chr} ${len} 
 
 # using specific region
@@ -98,11 +98,18 @@ qsub -l h_vmem=2G -N ${exp_name}_R categorizer.sh ${fastq_path} ${exp_name} ${ch
 #done < "$input"
 
 
-#cat ${result_path}_read_profile_*.txt > ${result_path}_read_profile.txt
+# cat ${result_path}_read_profile_*.txt > ${result_path}_read_profile.txt
+TCP="5p"
 
-for TC in 0 1 2 3 4
+qsub -N ${exp_name}_split_${TC} read_split_py.sh ${fastq_path} ${exp_name} ${TCP}
+
+
+for TC in 4 3 2 1 0
 do
-#  qsub -N ${exp_name}_split_${TC} read_split.sh ${fastq_path} ${exp_name} ${TC} ${chr}
+
+  sed '1,196d' ${result_path}_py_${TCP}.sam >> ${result_path}_py_${TC}.sam
+  qsub -N ${exp_name}_split_${TC} read_split_py.sh ${fastq_path} ${exp_name} ${TC} # ${chr}
+  TCP=${TC}
 done
 
 #STAR --runMode inputAlignmentsFromBAM --inputBAMfile ${exp_name}/${exp_name}_${TCN}.bam --outWigType bedGraph

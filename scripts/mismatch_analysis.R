@@ -44,7 +44,7 @@ bam <- scanBam(paste0(exp_name,"_sorted.bam"), param=param)
 # fastafile = system.file("genome.fa",package = "seqinR")
 # fasta = read.fasta("genome.fa",as.string = TRUE,strip.desc = TRUE)
 
-snp_data = read.delim("/dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/ref/TCSNP_G30.txt",header = FALSE,stringsAsFactors = FALSE)
+snp_data = read.delim("/dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/ref/TCSNP_G4.txt",header = FALSE,stringsAsFactors = FALSE)
 snp_data$pos = paste0(snp_data[,1],"_",snp_data[,2])
 
 .unlist <- function (x)

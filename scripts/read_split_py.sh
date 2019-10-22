@@ -26,17 +26,18 @@ result_path="/dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/results/${fastq_path
 annot_file="/dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/ref/gencode.v30.primary_assembly.annotation.gtf"
 
 #chr-specific
-awk -v x=${TCN} '$2>=x {print $1}' /dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/results/${fastq_path}${exp_name}_read_profile.txt > ${result_path}_read_list_${TCN}.txt
+#awk -v x=${TCN} '$2>=x {print $1}' /dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/results/${fastq_path}${exp_name}_read_profile.txt > ${result_path}_read_list_${TCN}.txt
 
 #awk -v x=${TCN} '$2>=x {print $1}' ${result_path}_read_profile.txt > ${result_path}_read_list_${TCN}.txt
 
 #samtools view /dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/results/${fastq_path}${exp_name}_sorted.bam | grep -f ${result_path}_read_list_${TCN}.txt > ${result_path}_${TCN}.sam
 
-awk 'NR==FNR{c[$1]++;next};c[$1]' ${result_path}_read_list_${TCN}.txt /dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/results/${fastq_path}${exp_name}_filtered.sam > ${result_path}_${TCN}.sam
+#awk 'NR==FNR{c[$1]++;next};c[$1]' ${result_path}_read_list_${TCN}.txt /dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/results/${fastq_path}${exp_name}_filtered.sam > ${result_path}_${TCN}.sam
 
-cat /dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/results/${fastq_path}${exp_name}_header.txt ${result_path}_${TCN}.sam > ${result_path}_temp_${TCN}.sam
+#cat /dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/results/${fastq_path}${exp_name}_header.txt ${result_path}_${TCN}.sam > ${result_path}_temp_${TCN}.sam
 
-samtools view -bh ${result_path}_temp_${TCN}.sam > ${result_path}_${TCN}.bam
+
+samtools view -bh ${result_path}_py_${TCN}.sam > ${result_path}_${TCN}.bam
 
 samtools sort ${result_path}_${TCN}.bam > ${result_path}_${TCN}_sorted.bam
 

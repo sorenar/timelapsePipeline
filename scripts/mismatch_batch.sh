@@ -8,7 +8,9 @@ do
   exp_name="$(echo $line | cut -d " " -f1)"
   exp_dir="$(echo $line | cut -d " " -f2)"
 
- # mkdir -p /dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/data/${new_dir}
+  #mkdir -p /dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/data/${exp_dir}/
+  #mv /dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/data/${exp_name}* /dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/data/${exp_dir}/
+  #gunzip /dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/data/${exp_dir}/*
  # rm /dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/data/${new_dir}*
  # cp /dfs3/samlab/sorenar/OsO-seq/timelapse/${old_dir}/${old_dir}_R*.fastq /dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/data/${new_dir} 
   #gunzip /dfs3/samlab/sorenar/OsO-seq/timelapsePipeline/data/${exp_dir}*.gz
